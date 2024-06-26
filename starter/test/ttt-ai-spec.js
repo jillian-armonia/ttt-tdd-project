@@ -1,7 +1,7 @@
 const { expect } = require('chai');
 
 const ComputerPlayer = require("../class/computer-player");
-const TTT = require("../class/ttt");
+
 
 describe ('ComputerPlayer', function () {
 
@@ -165,4 +165,3 @@ describe ('ComputerPlayer', function () {
   // });
 
 });
-

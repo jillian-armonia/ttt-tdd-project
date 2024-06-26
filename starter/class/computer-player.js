@@ -35,6 +35,7 @@ class ComputerPlayer {
     //1. Get a list of valid moves
     let validMoves = ComputerPlayer.getValidMoves(grid);
 
+
     //2. Copy the grid to create a probable scenario without mutating the grid
     let gridCopy = grid.slice(0);
 
@@ -42,7 +43,6 @@ class ComputerPlayer {
     for (let i = 0; i < validMoves.length; i++){
        //4. Try putting a valid move on the false grid and use the static checkWin() method to see if it is a winning move
       gridCopy[validMoves[i].row][validMoves[i].col] = symbol;
-
       //5. If it is a winning move that returns the symbol, then return that valid move
       if (TTT.checkWin(gridCopy) === symbol){
         return validMoves[i];
@@ -66,6 +66,7 @@ class ComputerPlayer {
       return opposingWin;
     }
 
+    return ComputerPlayer.randomMove();
   }
 
 }

@@ -1,5 +1,6 @@
 const Screen = require("./screen");
 const Cursor = require("./cursor");
+const ComputerPlayer = require('./computer-player')
 
 class TTT {
 
@@ -13,6 +14,8 @@ class TTT {
 
     this.cursor = new Cursor(3, 3);
 
+    this.isComputerActive = false;
+
     // Initialize a 3x3 tic-tac-toe grid
     Screen.initialize(3, 3);
     Screen.setGridlines(true);
@@ -23,6 +26,8 @@ class TTT {
     Screen.addCommand('left', 'move left', this.cursor.left.bind(this.cursor));
     Screen.addCommand('right', 'move right', this.cursor.right.bind(this.cursor));
     Screen.addCommand('return', 'place move', this.placeMove.bind(this));
+    //Add a command to activate the computer AI
+    Screen.addCommand('a', 'play against computer', this.activateComputer.bind(this));
 
     Screen.render();
   }
@@ -57,7 +62,26 @@ class TTT {
         Screen.render();
       }
     }
+
+    if (this.isComputerActive === true){
+      if (this.playerTurn === 'O'){
+        return;
+       } else {
+        let move = ComputerPlayer.getSmartMove(this.grid, this.playerTurn);
+        this.cursor.row = move.row;
+        this.cursor.col = move.col;
+        this.placeMove();
+       }
+    }
   }
+
+  //Create a method that activates the AI
+  activateComputer(){
+   this.isComputerActive = true;
+   Screen.setMessage('You are playing against the computer');
+   Screen.render();
+  }
+
 
 
   static checkWin(grid) {
