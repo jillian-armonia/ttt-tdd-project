@@ -49,8 +49,6 @@ class TTT {
     if (this.playerTurn === 'X'){
       this.placeComputerMove();
     }
-
-    console.log(this.grid)
     return;
   }
 
