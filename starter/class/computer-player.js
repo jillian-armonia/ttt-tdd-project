@@ -35,7 +35,6 @@ class ComputerPlayer {
     //1. Get a list of valid moves
     let validMoves = ComputerPlayer.getValidMoves(grid);
 
-
     //2. Copy the grid to create a probable scenario without mutating the grid
     let gridCopy = grid.slice(0);
 
@@ -44,7 +43,7 @@ class ComputerPlayer {
        //4. Try putting a valid move on the false grid and use the static checkWin() method to see if it is a winning move
       gridCopy[validMoves[i].row][validMoves[i].col] = symbol;
       //5. If it is a winning move that returns the symbol, then return that valid move
-      if (TTT.checkWin(gridCopy) === symbol){
+      if (ComputerPlayer.checkDiagonalWin(gridCopy) === symbol || ComputerPlayer.checkHorizontalWin(gridCopy) === symbol || ComputerPlayer.checkVerticalWin(gridCopy) === symbol){
         return validMoves[i];
       } else {
         gridCopy[validMoves[i].row][validMoves[i].col] = ' ';
@@ -66,7 +65,84 @@ class ComputerPlayer {
       return opposingWin;
     }
 
-    return ComputerPlayer.randomMove();
+    return ComputerPlayer.randomMove(grid);
+  }
+
+  static checkHorizontalWin(grid){
+    //0. Create helper functions to check each element as either X, O, or if it's empty
+    const checkX = box => box === 'X';
+    const checkO = box => box === 'O';
+
+    //1. Check for row wins
+    //1a. Check if every row has either X or O
+    for (let i = 0; i < grid.length; i++){
+      let row = grid[i];
+
+      if (row.every(checkX)){
+        // Return 'X' if player X wins
+        return 'X';
+      } else if (row.every(checkO)){
+        // Return 'O' if player O wins
+        return 'O';
+      }
+    }
+  }
+
+  static checkVerticalWin(grid){
+     //0. Create helper functions to check each element as either X, O, or if it's empty
+     const checkX = box => box === 'X';
+     const checkO = box => box === 'O';
+
+    //2. Check for column wins
+    //2a. Create new arrays to get values for each element in the column
+    let column0 = [];
+    let column1 = [];
+    let column2 = [];
+
+    //2b. Iterate through the grid to get the values of elements in each column
+    grid.forEach(row => {
+      for (let i = 0; i < row.length; i++){
+        let column = row[i];
+
+        switch (i){
+          case 0:
+            column0.push(column);
+            break;
+          case 1:
+            column1.push(column);
+            break;
+          case 2:
+            column2.push(column);
+            break;
+        }
+      }
+    })
+
+    //2c. Check if any column is filled with X or O
+    if (column0.every(checkX) || column1.every(checkX) || column2.every(checkX)){
+      return 'X';
+    } else if (column0.every(checkO) || column1.every(checkO) || column2.every(checkO)){
+      return 'O';
+    }
+
+  }
+
+  static checkDiagonalWin(grid){
+    const checkX = box => box === 'X';
+    const checkO = box => box === 'O';
+
+    for (let i = 0; i < grid.length; i++){
+      for (let j = 0; j < grid[i].length; j++){
+        let diagonal1 = [grid[0][0], grid[1][1], grid[2][2]];
+        let diagonal2 = [grid[0][2], grid[1][1], grid[2][0]];
+
+        if (diagonal1.every(checkX) || diagonal2.every(checkX)){
+          return 'X';
+        } else if (diagonal1.every(checkO) || diagonal2.every(checkO)){
+          return 'O';
+        }
+      }
+    }
   }
 
 }

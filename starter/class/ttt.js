@@ -14,8 +14,6 @@ class TTT {
 
     this.cursor = new Cursor(3, 3);
 
-    this.isComputerActive = false;
-
     // Initialize a 3x3 tic-tac-toe grid
     Screen.initialize(3, 3);
     Screen.setGridlines(true);
@@ -26,9 +24,8 @@ class TTT {
     Screen.addCommand('left', 'move left', this.cursor.left.bind(this.cursor));
     Screen.addCommand('right', 'move right', this.cursor.right.bind(this.cursor));
     Screen.addCommand('return', 'place move', this.placeMove.bind(this));
-    //Add a command to activate the computer AI
-    Screen.addCommand('a', 'play against computer', this.activateComputer.bind(this));
 
+    this.cursor.setBackgroundColor();
     Screen.render();
   }
 
@@ -38,21 +35,7 @@ class TTT {
       Screen.setGrid(this.cursor.row, this.cursor.col, this.playerTurn);
       this.grid[this.cursor.row][this.cursor.col] = this.playerTurn;
       this.cursor.resetBackgroundColor();
-
-      switch(this.playerTurn){
-        case 'O':
-          this.playerTurn = "X";
-          this.cursor.cursorColor = "magenta";
-          break;
-        case 'X':
-          this.playerTurn = "O";
-          this.cursor.cursorColor = "yellow";
-          break;
-      }
-
-      this.cursor.row = 0;
-      this.cursor.col = 0;
-      this.cursor.setBackgroundColor();
+      this.playerTurn = "X";
 
 
       if (TTT.checkWin(this.grid) === false){
@@ -63,25 +46,31 @@ class TTT {
       }
     }
 
-    if (this.isComputerActive === true){
-      if (this.playerTurn === 'O'){
-        return;
-       } else {
-        let move = ComputerPlayer.getSmartMove(this.grid, this.playerTurn);
-        this.cursor.row = move.row;
-        this.cursor.col = move.col;
-        this.placeMove();
-       }
+    if (this.playerTurn === 'X'){
+      this.placeComputerMove();
     }
+
+    console.log(this.grid)
+    return;
   }
 
-  //Create a method that activates the AI
-  activateComputer(){
-   this.isComputerActive = true;
-   Screen.setMessage('You are playing against the computer');
-   Screen.render();
-  }
+  //Create a method for the Computer Player's move
+  placeComputerMove(){
+      const cMove = ComputerPlayer.getSmartMove(this.grid, 'X');
+      Screen.setGrid(cMove.row, cMove.col, 'X');
+      this.grid[cMove.row][cMove.col] = 'X';
+      this.cursor.setBackgroundColor();
 
+      if (TTT.checkWin(this.grid) === false){
+        Screen.render();
+      } else {
+        TTT.endGame(TTT.checkWin(this.grid));
+        Screen.render();
+      }
+
+      this.playerTurn = "O";
+      return;
+  }
 
 
   static checkWin(grid) {
